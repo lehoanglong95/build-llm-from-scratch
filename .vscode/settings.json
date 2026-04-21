@@ -1,3 +1,11 @@
 {
-  "python-envs.pythonProjects": []
+  "python-envs.pythonProjects": [],
+  // "editor.quickSuggestions": {
+  //   "other": "off",
+  //   "comments": "off",
+  //   "strings": "off"
+  // },
+  "editor.suggestOnTriggerCharacters": false,
+  "editor.inlineSuggest.enabled": false,
+  "chat.disableAIFeatures": true
 }
