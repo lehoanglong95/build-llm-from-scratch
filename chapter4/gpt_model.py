@@ -63,3 +63,16 @@ class LayerNorm(nn.Module):
         var = x.var(dim=-1, keepdim=True, unbiased=False)
         norm_x = (x - mean) / torch.sqrt(var + self.eps)
         return self.scale * norm_x + self.shift
+
+class FeedForward(nn.Module):
+    def __init__(self, config: GPTConfig):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(config.emb_dim, config.emb_dim * 4),
+            nn.GELU(),
+            nn.Linear(config.emb_dim * 4, config.emb_dim)
+        )
+    
+    def forward(self, x):
+        return self.layers(x)
+
