@@ -1,10 +1,10 @@
-
+import tiktoken
 import torch
 import torch.nn as nn
 
 from chapter3.multihead_attention import MultiHeadAttention
 from chapter4.config import GPTConfig
-from chapter4.gpt_model import LayerNorm, FeedForward
+from chapter4.dummy_gpt_model import LayerNorm, FeedForward
 
 class TransformerBlock(nn.Module):
     def __init__(self, config: GPTConfig):
@@ -38,18 +38,18 @@ class TransformerBlock(nn.Module):
         return x + shortcut
 
 class GPTModel(nn.Module):
-    def __init__(self, cfg):
+    def __init__(self, cfg: GPTConfig):
         super().__init__()
-        self.tok_emb = nn.Embedding(cfg["vocab_size"], cfg["emb_dim"])
-        self.pos_emb = nn.Embedding(cfg["context_length"], cfg["emb_dim"])
-        self.drop_emb = nn.Dropout(cfg["drop_rate"])
+        self.tok_emb = nn.Embedding(cfg.vocab_size, cfg.emb_dim)
+        self.pos_emb = nn.Embedding(cfg.context_length, cfg.emb_dim)
+        self.drop_emb = nn.Dropout(cfg.dropout)
 
         self.trf_blocks = nn.Sequential(
-            *[TransformerBlock(cfg) for _ in range(cfg["n_layers"])])
+            *[TransformerBlock(cfg) for _ in range(cfg.n_layers)])
 
-        self.final_norm = LayerNorm(cfg["emb_dim"])
+        self.final_norm = LayerNorm(cfg.emb_dim)
         self.out_head = nn.Linear(
-            cfg["emb_dim"], cfg["vocab_size"], bias=False
+            cfg.emb_dim, cfg.vocab_size, bias=False
         )
 
     def forward(self, in_idx):
@@ -67,7 +67,23 @@ class GPTModel(nn.Module):
         return logits
 
 if __name__ == "__main__":
-    x = torch.rand(2, 4, 768)
-    block = TransformerBlock(GPTConfig())
-    output = block(x)
+    # x = torch.rand(2, 4, 768)
+    # block = TransformerBlock(GPTConfig())
+    # output = block(x)
+    # print(output.shape)
+
+    model = GPTModel(GPTConfig())
+    tokenizer = tiktoken.get_encoding("gpt2")
+    batch = []
+    txt1 = "Every effort moves you"
+    txt2 = "Every day holds a"
+
+    batch.append(torch.tensor(tokenizer.encode(txt1)))
+    batch.append(torch.tensor(tokenizer.encode(txt2)))
+    batch = torch.stack(batch, dim=0)
+    # print(batch)
+    print(batch.shape)
+
+    output = model(batch)
     print(output.shape)
+    # print(output)
