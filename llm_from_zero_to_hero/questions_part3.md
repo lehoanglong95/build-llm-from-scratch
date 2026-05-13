@@ -1,0 +1,8 @@
+- Why we dont need bias in Linear Layer if it have following normalisation?
+- why pytorch use uniform distribution instead of gauss (normal) distribution?
+- why we dont want values of weight is too big or too small?
+- why do we need trainable mean and std in batch normalisation?
+- why do we need to calculate mean and std for whole dataset for inference?
+- what is running mean and running var in batch normalisation
+- what is retain_grad in pytorch?
+- why we dont want weight become zero value?
